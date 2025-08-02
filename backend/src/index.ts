@@ -49,7 +49,12 @@ app.get('/api/test-db', async (req, res) => {
     if (!process.env.DATABASE_URL) {
       return res.status(500).json({ 
         error: 'DATABASE_URL not configured',
-        status: 'FAILED'
+        status: 'FAILED',
+        env: {
+          NODE_ENV: process.env.NODE_ENV,
+          PORT: process.env.PORT,
+          hasDatabaseUrl: !!process.env.DATABASE_URL
+        }
       });
     }
     
@@ -65,6 +70,11 @@ app.get('/api/test-db', async (req, res) => {
         users: userCount,
         configs: configCount
       },
+      env: {
+        NODE_ENV: process.env.NODE_ENV,
+        PORT: process.env.PORT,
+        hasDatabaseUrl: !!process.env.DATABASE_URL
+      },
       timestamp: new Date().toISOString()
     });
   } catch (error) {
@@ -72,6 +82,11 @@ app.get('/api/test-db', async (req, res) => {
     res.status(500).json({ 
       status: 'FAILED',
       error: error instanceof Error ? error.message : 'Unknown error',
+      env: {
+        NODE_ENV: process.env.NODE_ENV,
+        PORT: process.env.PORT,
+        hasDatabaseUrl: !!process.env.DATABASE_URL
+      },
       timestamp: new Date().toISOString()
     });
   } finally {

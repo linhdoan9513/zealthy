@@ -13,9 +13,6 @@ export const getOnboardingConfig = async (req: Request, res: Response) => {
       });
     }
 
-    // Test database connection first
-    await prisma.$connect();
-
     const configs = await prisma.onboardingConfig.findMany({
       orderBy: [
         { page: 'asc' },
@@ -53,14 +50,18 @@ export const getOnboardingConfig = async (req: Request, res: Response) => {
           details: 'DATABASE_URL environment variable is missing or invalid'
         });
       }
+      if (error.message.includes('prepared statement')) {
+        return res.status(500).json({ 
+          error: 'Database connection pooling error',
+          details: 'Connection pool issue. Please try again.'
+        });
+      }
     }
     
     res.status(500).json({ 
       error: 'Internal server error',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
-  } finally {
-    await prisma.$disconnect();
   }
 };
 
@@ -74,9 +75,6 @@ export const updateOnboardingConfig = async (req: Request, res: Response) => {
         details: 'DATABASE_URL environment variable is missing'
       });
     }
-
-    // Test database connection first
-    await prisma.$connect();
 
     const { page, components }: UpdateConfigRequest = req.body;
 
@@ -126,14 +124,18 @@ export const updateOnboardingConfig = async (req: Request, res: Response) => {
           details: 'DATABASE_URL environment variable is missing or invalid'
         });
       }
+      if (error.message.includes('prepared statement')) {
+        return res.status(500).json({ 
+          error: 'Database connection pooling error',
+          details: 'Connection pool issue. Please try again.'
+        });
+      }
     }
     
     res.status(500).json({ 
       error: 'Internal server error',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
-  } finally {
-    await prisma.$disconnect();
   }
 };
 
@@ -147,9 +149,6 @@ export const initializeDefaultConfig = async (req: Request, res: Response) => {
         details: 'DATABASE_URL environment variable is missing'
       });
     }
-
-    // Test database connection first
-    await prisma.$connect();
 
     // Delete all existing configurations
     await prisma.onboardingConfig.deleteMany();
@@ -192,13 +191,17 @@ export const initializeDefaultConfig = async (req: Request, res: Response) => {
           details: 'DATABASE_URL environment variable is missing or invalid'
         });
       }
+      if (error.message.includes('prepared statement')) {
+        return res.status(500).json({ 
+          error: 'Database connection pooling error',
+          details: 'Connection pool issue. Please try again.'
+        });
+      }
     }
     
     res.status(500).json({ 
       error: 'Internal server error',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
-  } finally {
-    await prisma.$disconnect();
   }
 }; 

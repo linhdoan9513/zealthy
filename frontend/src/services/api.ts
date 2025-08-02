@@ -13,8 +13,8 @@ const getApiBaseUrl = () => {
     return 'http://localhost:5001/api';
   }
   
-  // Use backend domain for API calls - updated to match current deployment
-  return 'https://zealthty-oix844me4-linhs-projects-483a1d93.vercel.app/api';
+  // Use the same domain for API calls (backend will be deployed to the same domain)
+  return '/api';
 };
 
 const API_BASE_URL = getApiBaseUrl();

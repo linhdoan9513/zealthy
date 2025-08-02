@@ -4,6 +4,18 @@ import { CreateUserRequest, UpdateUserRequest } from '../types';
 
 export const createUser = async (req: Request, res: Response) => {
   try {
+    // Check if DATABASE_URL is configured
+    if (!process.env.DATABASE_URL) {
+      console.error('DATABASE_URL environment variable is not configured');
+      return res.status(500).json({ 
+        error: 'Database configuration error',
+        details: 'DATABASE_URL environment variable is missing'
+      });
+    }
+
+    // Test database connection first
+    await prisma.$connect();
+
     const { email, password, firstName, lastName }: CreateUserRequest = req.body;
 
     if (!email || !password || !firstName || !lastName) {
@@ -37,12 +49,52 @@ export const createUser = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error('Error creating user:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    
+    // Provide more specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes('connect') || error.message.includes('ECONNREFUSED')) {
+        return res.status(500).json({ 
+          error: 'Database connection failed',
+          details: error.message
+        });
+      }
+      if (error.message.includes('relation') || error.message.includes('table')) {
+        return res.status(500).json({ 
+          error: 'Database schema error',
+          details: 'Database tables may not be migrated. Run: npx prisma migrate deploy'
+        });
+      }
+      if (error.message.includes('DATABASE_URL')) {
+        return res.status(500).json({ 
+          error: 'Database configuration error',
+          details: 'DATABASE_URL environment variable is missing or invalid'
+        });
+      }
+    }
+    
+    res.status(500).json({ 
+      error: 'Internal server error',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  } finally {
+    await prisma.$disconnect();
   }
 };
 
 export const updateUser = async (req: Request, res: Response) => {
   try {
+    // Check if DATABASE_URL is configured
+    if (!process.env.DATABASE_URL) {
+      console.error('DATABASE_URL environment variable is not configured');
+      return res.status(500).json({ 
+        error: 'Database configuration error',
+        details: 'DATABASE_URL environment variable is missing'
+      });
+    }
+
+    // Test database connection first
+    await prisma.$connect();
+
     const { id } = req.params;
     const updateData: UpdateUserRequest = req.body;
 
@@ -71,12 +123,52 @@ export const updateUser = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error('Error updating user:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    
+    // Provide more specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes('connect') || error.message.includes('ECONNREFUSED')) {
+        return res.status(500).json({ 
+          error: 'Database connection failed',
+          details: error.message
+        });
+      }
+      if (error.message.includes('relation') || error.message.includes('table')) {
+        return res.status(500).json({ 
+          error: 'Database schema error',
+          details: 'Database tables may not be migrated. Run: npx prisma migrate deploy'
+        });
+      }
+      if (error.message.includes('DATABASE_URL')) {
+        return res.status(500).json({ 
+          error: 'Database configuration error',
+          details: 'DATABASE_URL environment variable is missing or invalid'
+        });
+      }
+    }
+    
+    res.status(500).json({ 
+      error: 'Internal server error',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  } finally {
+    await prisma.$disconnect();
   }
 };
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
+    // Check if DATABASE_URL is configured
+    if (!process.env.DATABASE_URL) {
+      console.error('DATABASE_URL environment variable is not configured');
+      return res.status(500).json({ 
+        error: 'Database configuration error',
+        details: 'DATABASE_URL environment variable is missing'
+      });
+    }
+
+    // Test database connection first
+    await prisma.$connect();
+
     const users = await prisma.user.findMany({
       select: {
         id: true,
@@ -100,12 +192,52 @@ export const getAllUsers = async (req: Request, res: Response) => {
     res.json(users);
   } catch (error) {
     console.error('Error fetching users:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    
+    // Provide more specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes('connect') || error.message.includes('ECONNREFUSED')) {
+        return res.status(500).json({ 
+          error: 'Database connection failed',
+          details: error.message
+        });
+      }
+      if (error.message.includes('relation') || error.message.includes('table')) {
+        return res.status(500).json({ 
+          error: 'Database schema error',
+          details: 'Database tables may not be migrated. Run: npx prisma migrate deploy'
+        });
+      }
+      if (error.message.includes('DATABASE_URL')) {
+        return res.status(500).json({ 
+          error: 'Database configuration error',
+          details: 'DATABASE_URL environment variable is missing or invalid'
+        });
+      }
+    }
+    
+    res.status(500).json({ 
+      error: 'Internal server error',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  } finally {
+    await prisma.$disconnect();
   }
 };
 
 export const getUserById = async (req: Request, res: Response) => {
   try {
+    // Check if DATABASE_URL is configured
+    if (!process.env.DATABASE_URL) {
+      console.error('DATABASE_URL environment variable is not configured');
+      return res.status(500).json({ 
+        error: 'Database configuration error',
+        details: 'DATABASE_URL environment variable is missing'
+      });
+    }
+
+    // Test database connection first
+    await prisma.$connect();
+
     const { id } = req.params;
 
     const user = await prisma.user.findUnique({
@@ -133,6 +265,34 @@ export const getUserById = async (req: Request, res: Response) => {
     res.json(user);
   } catch (error) {
     console.error('Error fetching user:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    
+    // Provide more specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes('connect') || error.message.includes('ECONNREFUSED')) {
+        return res.status(500).json({ 
+          error: 'Database connection failed',
+          details: error.message
+        });
+      }
+      if (error.message.includes('relation') || error.message.includes('table')) {
+        return res.status(500).json({ 
+          error: 'Database schema error',
+          details: 'Database tables may not be migrated. Run: npx prisma migrate deploy'
+        });
+      }
+      if (error.message.includes('DATABASE_URL')) {
+        return res.status(500).json({ 
+          error: 'Database configuration error',
+          details: 'DATABASE_URL environment variable is missing or invalid'
+        });
+      }
+    }
+    
+    res.status(500).json({ 
+      error: 'Internal server error',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  } finally {
+    await prisma.$disconnect();
   }
 }; 

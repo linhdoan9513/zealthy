@@ -37,7 +37,7 @@ export default function OnboardingWizard() {
   const queryClient = useQueryClient();
 
   // Fetch onboarding configuration
-  const { data: config, isLoading: configLoading, error: configError } = useQuery({
+  const { data: config, isLoading: configLoading } = useQuery({
     queryKey: ['onboardingConfig'],
     queryFn: adminAPI.getOnboardingConfig,
     retry: false,

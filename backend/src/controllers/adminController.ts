@@ -4,6 +4,15 @@ import { UpdateConfigRequest } from '../types';
 
 export const getOnboardingConfig = async (req: Request, res: Response) => {
   try {
+    // Check if DATABASE_URL is configured
+    if (!process.env.DATABASE_URL) {
+      console.error('DATABASE_URL environment variable is not configured');
+      return res.status(500).json({ 
+        error: 'Database configuration error',
+        details: 'DATABASE_URL environment variable is missing'
+      });
+    }
+
     const configs = await prisma.onboardingConfig.findMany({
       orderBy: [
         { page: 'asc' },
@@ -20,7 +29,27 @@ export const getOnboardingConfig = async (req: Request, res: Response) => {
     res.json(groupedConfigs);
   } catch (error) {
     console.error('Error fetching onboarding config:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    
+    // Provide more specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes('connect')) {
+        return res.status(500).json({ 
+          error: 'Database connection failed',
+          details: error.message
+        });
+      }
+      if (error.message.includes('relation') || error.message.includes('table')) {
+        return res.status(500).json({ 
+          error: 'Database schema error',
+          details: 'Database tables may not be migrated. Run: npx prisma migrate deploy'
+        });
+      }
+    }
+    
+    res.status(500).json({ 
+      error: 'Internal server error',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 };
 

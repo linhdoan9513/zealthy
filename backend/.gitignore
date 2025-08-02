@@ -64,3 +64,4 @@ node_modules/
 ehthumbs.db
 Thumbs.db 
 /src/generated/prisma
+.vercel

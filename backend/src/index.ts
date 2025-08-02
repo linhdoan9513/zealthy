@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes';
 import adminRoutes from './routes/adminRoutes';
+import prisma from './services/database';
 
 // Load environment variables
 dotenv.config();
@@ -14,7 +15,13 @@ const PORT = process.env.PORT || 5000;
 
 // CORS configuration
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001'],
+  origin: [
+    'http://localhost:3000', 
+    'http://localhost:3001',
+    'https://frontend-g068m1bsq-linhs-projects-483a1d93.vercel.app',
+    'https://zealthy.vercel.app',
+    'https://*.vercel.app'
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -36,14 +43,55 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
+// Database connection test endpoint
+app.get('/api/test-db', async (req, res) => {
+  try {
+    if (!process.env.DATABASE_URL) {
+      return res.status(500).json({ 
+        error: 'DATABASE_URL not configured',
+        status: 'FAILED'
+      });
+    }
+    
+    // Test database connection with a simple count query
+    await prisma.$connect();
+    const userCount = await prisma.user.count();
+    const configCount = await prisma.onboardingConfig.count();
+    
+    res.json({ 
+      status: 'OK', 
+      message: 'Database connection successful',
+      data: {
+        users: userCount,
+        configs: configCount
+      },
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Database connection test failed:', error);
+    res.status(500).json({ 
+      status: 'FAILED',
+      error: error instanceof Error ? error.message : 'Unknown error',
+      timestamp: new Date().toISOString()
+    });
+  } finally {
+    await prisma.$disconnect();
+  }
+});
+
 // API Routes
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/health`);
-  console.log(`👥 Users API: http://localhost:${PORT}/api/users`);
-  console.log(`⚙️  Admin API: http://localhost:${PORT}/api/admin`);
-}); 
+// Start server (only in development)
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`📊 Health check: http://localhost:${PORT}/health`);
+    console.log(`👥 Users API: http://localhost:${PORT}/api/users`);
+    console.log(`⚙️  Admin API: http://localhost:${PORT}/api/admin`);
+  });
+}
+
+// Export for Vercel
+export default app; 

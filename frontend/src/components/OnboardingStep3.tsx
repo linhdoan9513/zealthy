@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Typography, TextField, Grid } from '@mui/material';
+import { Box, Typography, TextField } from '@mui/material';
 import { useFormContext } from 'react-hook-form';
 import { OnboardingConfig } from '@/types';
 

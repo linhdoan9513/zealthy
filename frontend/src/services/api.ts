@@ -1,7 +1,23 @@
 import axios from 'axios';
 import { User, CreateUserRequest, UpdateUserRequest, OnboardingConfig, UpdateConfigRequest } from '../types';
 
-const API_BASE_URL = 'http://localhost:5001/api';
+// Smart API URL detection for different environments
+const getApiBaseUrl = () => {
+  // If environment variable is set, use it
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+  
+  // If running in browser and on localhost, use local backend
+  if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+    return 'http://localhost:5001/api';
+  }
+  
+  // Use backend domain for API calls - updated to match current deployment
+  return 'https://zealthty-oix844me4-linhs-projects-483a1d93.vercel.app/api';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 const api = axios.create({
   baseURL: API_BASE_URL,

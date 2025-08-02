@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import prisma from '../services/database';
+import { db } from '../utils/db';
 import { CreateUserRequest, UpdateUserRequest } from '../types';
 
 export const createUser = async (req: Request, res: Response) => {
@@ -20,7 +20,7 @@ export const createUser = async (req: Request, res: Response) => {
     }
 
     // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
+    const existingUser = await db.user.findUnique({
       where: { email }
     });
 
@@ -28,7 +28,7 @@ export const createUser = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'User with this email already exists' });
     }
 
-    const user = await prisma.user.create({
+    const user = await db.user.create({
       data: {
         email,
         password,
@@ -101,7 +101,7 @@ export const updateUser = async (req: Request, res: Response) => {
       updateData.birthdate = new Date(updateData.birthdate).toISOString();
     }
 
-    const user = await prisma.user.update({
+    const user = await db.user.update({
       where: { id },
       data: updateData
     });
@@ -168,7 +168,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
       });
     }
 
-    const users = await prisma.user.findMany({
+    const users = await db.user.findMany({
       select: {
         id: true,
         email: true,
@@ -240,7 +240,7 @@ export const getUserById = async (req: Request, res: Response) => {
 
     const { id } = req.params;
 
-    const user = await prisma.user.findUnique({
+    const user = await db.user.findUnique({
       where: { id },
       select: {
         id: true,

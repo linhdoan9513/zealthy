@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import prisma from '../services/database';
+import { db } from '../utils/db';
 import { UpdateConfigRequest } from '../types';
 
 export const getOnboardingConfig = async (req: Request, res: Response) => {
@@ -13,7 +13,7 @@ export const getOnboardingConfig = async (req: Request, res: Response) => {
       });
     }
 
-    const configs = await prisma.onboardingConfig.findMany({
+    const configs = await db.onboardingConfig.findMany({
       orderBy: [
         { page: 'asc' },
         { order: 'asc' }
@@ -22,8 +22,8 @@ export const getOnboardingConfig = async (req: Request, res: Response) => {
 
     // Group by page
     const groupedConfigs = {
-      page2: configs.filter(c => c.page === 2),
-      page3: configs.filter(c => c.page === 3)
+      page2: configs.filter((c: any) => c.page === 2),
+      page3: configs.filter((c: any) => c.page === 3)
     };
 
     res.json(groupedConfigs);
@@ -83,14 +83,14 @@ export const updateOnboardingConfig = async (req: Request, res: Response) => {
     }
 
     // Delete existing configs for this page
-    await prisma.onboardingConfig.deleteMany({
+    await db.onboardingConfig.deleteMany({
       where: { page }
     });
 
     // Create new configs
     const newConfigs = await Promise.all(
       components.map(async (comp, index) => {
-        return prisma.onboardingConfig.create({
+        return db.onboardingConfig.create({
           data: {
             page,
             component: comp.component,
@@ -151,7 +151,7 @@ export const initializeDefaultConfig = async (req: Request, res: Response) => {
     }
 
     // Delete all existing configurations
-    await prisma.onboardingConfig.deleteMany();
+    await db.onboardingConfig.deleteMany();
 
     // Create default configuration - each page must have at least one component
     const defaultConfigs = [
@@ -163,7 +163,7 @@ export const initializeDefaultConfig = async (req: Request, res: Response) => {
 
     const configs = await Promise.all(
       defaultConfigs.map(config => 
-        prisma.onboardingConfig.create({ data: config })
+        db.onboardingConfig.create({ data: config })
       )
     );
 

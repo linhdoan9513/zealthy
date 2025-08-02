@@ -10,7 +10,8 @@
     "vercel-build": "prisma generate && tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "test-db": "node test-db.js",
-    "diagnose": "node diagnose.js"
+    "diagnose": "node diagnose.js",
+    "test-connection": "node test-connection.js"
   },
   "keywords": [],
   "author": "",

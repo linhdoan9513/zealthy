@@ -5,7 +5,7 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes';
 import adminRoutes from './routes/adminRoutes';
-import prisma from './services/database';
+import { db } from './utils/db';
 
 // Load environment variables
 dotenv.config();
@@ -59,9 +59,9 @@ app.get('/api/test-db', async (req, res) => {
     }
     
     // Test database connection with a simple count query
-    await prisma.$connect();
-    const userCount = await prisma.user.count();
-    const configCount = await prisma.onboardingConfig.count();
+    await db.$connect();
+    const userCount = await db.user.count();
+    const configCount = await db.onboardingConfig.count();
     
     res.json({ 
       status: 'OK', 
@@ -90,7 +90,7 @@ app.get('/api/test-db', async (req, res) => {
       timestamp: new Date().toISOString()
     });
   } finally {
-    await prisma.$disconnect();
+    await db.$disconnect();
   }
 });
 

@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  password  String
+  firstName String
+  lastName  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  aboutMe   String?
+  street    String?
+  city      String?
+  state     String?
+  zip       String?
+  birthdate DateTime?
+
+  @@map("users")
+}
+
+model OnboardingConfig {
+  id        String   @id @default(cuid())
+  page      Int
+  component String
+  order     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([page, component])
+  @@map("onboarding_config")
+}

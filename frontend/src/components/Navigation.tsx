@@ -3,6 +3,7 @@
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import styles from './Navigation.module.css';
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -14,19 +15,17 @@ export default function Navigation() {
   ];
 
   return (
-    <AppBar position="static" sx={{ mb: 3 }}>
-      <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+    <AppBar position="static" className={styles.navigation}>
+      <Toolbar className={styles.toolbar}>
+        <Typography variant="h6" component="div" className={styles.brand}>
           Zealthy
         </Typography>
-        <Box sx={{ display: 'flex', gap: 1 }}>
+        <Box className={styles.navContainer}>
           {navItems.map((item) => (
             <Link key={item.path} href={item.path} passHref>
               <Button
                 color="inherit"
-                sx={{
-                  backgroundColor: pathname === item.path ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-                }}
+                className={`${styles.navButton} ${pathname === item.path ? styles.active : ''}`}
               >
                 {item.label}
               </Button>

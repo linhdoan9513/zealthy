@@ -3,7 +3,7 @@
 import { Box, Typography, TextField } from '@mui/material';
 import { useFormContext } from 'react-hook-form';
 
-export default function OnboardingStep1() {
+export default function AccountCreationForm() {
   const { register, formState: { errors } } = useFormContext();
 
   return (

@@ -8,9 +8,10 @@ import * as yup from 'yup';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminAPI, userAPI } from '../services/api';
 import { OnboardingFormData, UpdateUserRequest } from '../types';
-import OnboardingStep1 from '../components/OnboardingStep1';
-import OnboardingStep2 from '../components/OnboardingStep2';
-import OnboardingStep3 from '../components/OnboardingStep3';
+import AccountCreationForm from '../components/AccountCreationForm';
+import PersonalInfoForm from '../components/PersonalInfoForm';
+import AdditionalDetailsForm from '../components/AdditionalDetailsForm';
+import styles from './page.module.css';
 
 const validationSchema = yup.object({
   firstName: yup.string().optional(),
@@ -141,56 +142,32 @@ export default function OnboardingWizard() {
   };
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Paper elevation={3} sx={{ p: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom align="center">
+    <Container maxWidth="md" className={styles.container}>
+      <Paper elevation={0} className={styles.paper}>
+        <Typography variant="h4" component="h1" className={styles.title}>
           Welcome to Zealthy
         </Typography>
-        <Typography variant="body1" color="text.secondary" align="center" sx={{ mb: 4 }}>
+        <Typography variant="body1" className={styles.subtitle}>
           Complete your onboarding to get started
         </Typography>
 
         <Stepper 
           activeStep={activeStep} 
-          sx={{ 
-            mb: 4,
-            '& .MuiStepLabel-root': {
-              minWidth: 0,
-            },
-            '& .MuiStepLabel-label': {
-              fontSize: { xs: '0.75rem', sm: '0.875rem' },
-              lineHeight: { xs: 1.2, sm: 1.4 },
-            },
-            '& .MuiStepLabel-labelContainer': {
-              paddingRight: { xs: 0.5, sm: 1 },
-            }
-          }}
+          className={styles.stepper}
         >
           {steps.map((step, index) => (
             <Step key={index}>
-              <StepLabel>
-                <Box sx={{ 
-                  display: { xs: 'block', sm: 'block' },
-                  textAlign: { xs: 'left', sm: 'left' }
-                }}>
+              <StepLabel className={styles.stepperLabel}>
+                <Box>
                   <Typography 
                     variant="body2" 
-                    fontWeight="medium"
-                    sx={{
-                      fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                      lineHeight: { xs: 1.2, sm: 1.4 },
-                    }}
+                    className={styles.stepperLabelText}
                   >
                     {step.label}
                   </Typography>
                   <Typography 
                     variant="caption" 
-                    color="text.secondary"
-                    sx={{
-                      fontSize: { xs: '0.625rem', sm: '0.75rem' },
-                      lineHeight: { xs: 1.1, sm: 1.3 },
-                      display: { xs: 'block', sm: 'block' },
-                    }}
+                    className={styles.stepperDescription}
                   >
                     {step.description}
                   </Typography>
@@ -202,14 +179,15 @@ export default function OnboardingWizard() {
 
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)}>
-            {activeStep === 0 && <OnboardingStep1 />}
-            {activeStep === 1 && config?.page2 && <OnboardingStep2 config={config.page2} />}
-            {activeStep === 2 && config?.page3 && <OnboardingStep3 config={config.page3} />}
+            {activeStep === 0 && <AccountCreationForm />}
+            {activeStep === 1 && config?.page2 && <PersonalInfoForm config={config.page2} />}
+            {activeStep === 2 && config?.page3 && <AdditionalDetailsForm config={config.page3} />}
 
-            <Box sx={{ display: 'flex', justifyContent: activeStep === 0 ? 'flex-end' : 'space-between', mt: 4 }}>
+            <Box className={activeStep === 0 ? styles.buttonContainerFirstStep : styles.buttonContainer}>
               {activeStep > 0 && (
                 <Button
                   onClick={handleBack}
+                  className={styles.backButton}
                 >
                   Back
                 </Button>
@@ -217,6 +195,7 @@ export default function OnboardingWizard() {
               <Button
                 variant="contained"
                 onClick={handleNext}
+                className={styles.nextButton}
               >
                 {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
               </Button>

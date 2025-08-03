@@ -4,11 +4,11 @@ import { Box, Typography, TextField } from '@mui/material';
 import { useFormContext } from 'react-hook-form';
 import { OnboardingConfig } from '@/types';
 
-interface OnboardingStep3Props {
+interface AdditionalDetailsFormProps {
   config: OnboardingConfig[];
 }
 
-export default function OnboardingStep3({ config }: OnboardingStep3Props) {
+export default function AdditionalDetailsForm({ config }: AdditionalDetailsFormProps) {
   const { register, formState: { errors } } = useFormContext();
 
   const renderComponent = (component: OnboardingConfig) => {

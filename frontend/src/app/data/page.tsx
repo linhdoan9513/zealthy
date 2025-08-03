@@ -16,6 +16,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { userAPI } from '@/services/api';
 import { User } from '@/types';
+import styles from './data.module.css';
 
 export default function DataTablePage() {
   const { data: users, isLoading, error } = useQuery({
@@ -26,7 +27,7 @@ export default function DataTablePage() {
 
   if (isLoading) {
     return (
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Container maxWidth="lg" className={styles.container}>
         <Typography>Loading user data...</Typography>
       </Container>
     );
@@ -34,39 +35,36 @@ export default function DataTablePage() {
 
   if (error) {
     return (
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Container maxWidth="lg" className={styles.container}>
         <Typography color="error">Error loading user data</Typography>
       </Container>
     );
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
+    <Container maxWidth="lg" className={styles.container}>
+      <Typography variant="h4" component="h1" className={styles.title}>
         User Data Table
       </Typography>
-      <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-        Real-time view of all user onboarding data
-      </Typography>
 
-      <Paper elevation={2}>
+      <Paper elevation={0} className={styles.tableContainer}>
         <TableContainer>
-          <Table>
-            <TableHead>
+          <Table className={styles.table}>
+            <TableHead className={styles.tableHead}>
               <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>About Me</TableCell>
-                <TableCell>Address</TableCell>
-                <TableCell>Birth Date</TableCell>
-                <TableCell>Created</TableCell>
-                <TableCell>Updated</TableCell>
+                <TableCell className={styles.tableHeadCell}>Name</TableCell>
+                <TableCell className={styles.tableHeadCell}>Email</TableCell>
+                <TableCell className={styles.tableHeadCell}>About Me</TableCell>
+                <TableCell className={styles.tableHeadCell}>Address</TableCell>
+                <TableCell className={styles.tableHeadCell}>Birth Date</TableCell>
+                <TableCell className={styles.tableHeadCell}>Created</TableCell>
+                <TableCell className={styles.tableHeadCell}>Updated</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {users?.map((user: User) => (
-                <TableRow key={user.id}>
-                  <TableCell>
+                <TableRow key={user.id} className={styles.tableRow}>
+                  <TableCell className={styles.tableBodyCell}>
                     {user.firstName || user.lastName ? (
                       <Typography variant="body2">
                         {[user.firstName, user.lastName].filter(Boolean).join(' ')}
@@ -75,8 +73,8 @@ export default function DataTablePage() {
                       <Chip label="Not provided" size="small" variant="outlined" />
                     )}
                   </TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>
+                  <TableCell className={styles.tableBodyCell}>{user.email}</TableCell>
+                  <TableCell className={styles.tableBodyCell}>
                     {user.aboutMe ? (
                       <Typography variant="body2" sx={{ maxWidth: 200 }}>
                         {user.aboutMe.length > 100
@@ -87,7 +85,7 @@ export default function DataTablePage() {
                       <Chip label="Not provided" size="small" variant="outlined" />
                     )}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className={styles.tableBodyCell}>
                     {user.street || user.city || user.state || user.zip ? (
                       <Box>
                         {user.street && <Typography variant="body2">{user.street}</Typography>}
@@ -101,17 +99,17 @@ export default function DataTablePage() {
                       <Chip label="Not provided" size="small" variant="outlined" />
                     )}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className={styles.tableBodyCell}>
                     {user.birthdate ? (
                       new Date(user.birthdate).toLocaleDateString()
                     ) : (
                       <Chip label="Not provided" size="small" variant="outlined" />
                     )}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className={styles.tableBodyCell}>
                     {new Date(user.createdAt).toLocaleDateString()}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className={styles.tableBodyCell}>
                     {new Date(user.updatedAt).toLocaleDateString()}
                   </TableCell>
                 </TableRow>
@@ -122,7 +120,7 @@ export default function DataTablePage() {
       </Paper>
 
       {users?.length === 0 && (
-        <Box sx={{ textAlign: 'center', py: 4 }}>
+        <Box className={styles.emptyState}>
           <Typography variant="body1" color="text.secondary">
             No users have completed onboarding yet.
           </Typography>

@@ -1,0 +1,117 @@
+.container {
+  padding: 32px 0;
+}
+
+.paper {
+  padding: 32px;
+  background-color: var(--zealthy-white);
+  border-radius: 20px;
+  box-shadow: 0 4px 16px var(--zealthy-shadow);
+  border: 1px solid var(--zealthy-border);
+}
+
+.title {
+  color: var(--zealthy-primary);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.subtitle {
+  color: var(--zealthy-text-light);
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.stepper {
+  margin-bottom: 32px;
+}
+
+.stepperLabel {
+  min-width: 0;
+}
+
+.stepperLabelText {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  font-weight: 500;
+  color: var(--zealthy-text-dark);
+}
+
+.stepperDescription {
+  font-size: 0.75rem;
+  line-height: 1.3;
+  color: var(--zealthy-text-light);
+  display: block;
+}
+
+/* Override Material-UI stepper colors to use Zealthy green theme */
+.stepper :global(.MuiStepIcon-root.Mui-active) {
+  color: var(--zealthy-primary) !important;
+}
+
+.stepper :global(.MuiStepIcon-root.Mui-completed) {
+  color: var(--zealthy-primary) !important;
+}
+
+.stepper :global(.MuiStepIcon-root) {
+  color: #E0E0E0 !important;
+}
+
+.stepper :global(.MuiStepConnector-line) {
+  border-color: #E0E0E0 !important;
+}
+
+.stepper :global(.MuiStepConnector-root.Mui-active .MuiStepConnector-line) {
+  border-color: var(--zealthy-primary) !important;
+}
+
+.stepper :global(.MuiStepConnector-root.Mui-completed .MuiStepConnector-line) {
+  border-color: var(--zealthy-primary) !important;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 32px;
+}
+
+.buttonContainerFirstStep {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 32px;
+}
+
+.backButton {
+  background-color: var(--zealthy-white);
+  color: var(--zealthy-primary);
+  border: 2px solid var(--zealthy-primary);
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px var(--zealthy-shadow);
+}
+
+.backButton:hover {
+  background-color: var(--zealthy-primary);
+  color: var(--zealthy-white);
+  box-shadow: 0 4px 8px var(--zealthy-shadow);
+}
+
+.nextButton {
+  background-color: var(--zealthy-primary);
+  color: var(--zealthy-white);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px var(--zealthy-shadow);
+}
+
+.nextButton:hover {
+  background-color: var(--zealthy-primary-light);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px var(--zealthy-shadow);
+} 

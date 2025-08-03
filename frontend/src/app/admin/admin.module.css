@@ -1,0 +1,55 @@
+.buttonContainer {
+  margin-top: 32px;
+  display: flex;
+  gap: 16px;
+}
+
+.saveButton {
+  background-color: var(--zealthy-primary) !important;
+  color: var(--zealthy-white) !important;
+  border: none !important;
+  padding: 12px 24px !important;
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 4px var(--zealthy-shadow) !important;
+  text-transform: none !important;
+}
+
+.saveButton:hover {
+  background-color: var(--zealthy-primary-light) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 8px var(--zealthy-shadow) !important;
+}
+
+.saveButton:disabled {
+  background-color: #ccc !important;
+  color: #666 !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.resetButton {
+  background-color: var(--zealthy-white) !important;
+  color: var(--zealthy-primary) !important;
+  border: 2px solid var(--zealthy-primary) !important;
+  padding: 10px 22px !important;
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 4px var(--zealthy-shadow) !important;
+  text-transform: none !important;
+}
+
+.resetButton:hover {
+  background-color: var(--zealthy-primary) !important;
+  color: var(--zealthy-white) !important;
+  box-shadow: 0 4px 8px var(--zealthy-shadow) !important;
+}
+
+.resetButton:disabled {
+  background-color: #f5f5f5 !important;
+  color: #ccc !important;
+  border-color: #ccc !important;
+  box-shadow: none !important;
+} 

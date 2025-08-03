@@ -18,6 +18,7 @@ import { Add as AddIcon, Remove as RemoveIcon } from '@mui/icons-material';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminAPI } from '@/services/api';
 import { OnboardingComponent } from '@/types';
+import styles from './admin.module.css';
 
 const availableComponents: { value: OnboardingComponent; label: string }[] = [
   { value: 'aboutMe', label: 'About Me' },
@@ -202,7 +203,6 @@ export default function AdminPage() {
       </Typography>
 
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3 }}>
-        {/* Page 2 Configuration */}
         <Card>
           <CardContent>
             <Typography variant="h6" gutterBottom>
@@ -274,7 +274,6 @@ export default function AdminPage() {
           </CardContent>
         </Card>
 
-        {/* Page 3 Configuration */}
         <Card>
           <CardContent>
             <Typography variant="h6" gutterBottom>
@@ -284,7 +283,6 @@ export default function AdminPage() {
               Components on the third page of the onboarding flow
             </Typography>
 
-            {/* Current Page 3 Components */}
             <List dense>
               {page3Components.map((component) => (
                 <ListItem
@@ -308,7 +306,6 @@ export default function AdminPage() {
 
             <Divider sx={{ my: 2 }} />
 
-            {/* Available Components to Add */}
             <Typography variant="subtitle2" gutterBottom>
               Available Components
             </Typography>
@@ -347,16 +344,16 @@ export default function AdminPage() {
         </Card>
       </Box>
 
-      <Box sx={{ mt: 4, display: 'flex', gap: 2 }}>
+      <Box className={styles.buttonContainer}>
         <Button
-          variant="contained"
+          className={styles.saveButton}
           onClick={handleSave}
           disabled={updateConfigMutation.isPending || !isConfigurationValid()}
         >
           Save Configuration
         </Button>
         <Button
-          variant="outlined"
+          className={styles.resetButton}
           onClick={handleInitialize}
           disabled={initializeConfigMutation.isPending}
         >

@@ -1,0 +1,41 @@
+.navigation {
+  margin-bottom: 24px;
+  background-color: var(--zealthy-white);
+  box-shadow: 0 2px 4px var(--zealthy-shadow);
+  border-radius: 0 0 16px 16px;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+}
+
+.brand {
+  flex-grow: 1;
+  color: var(--zealthy-primary);
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+.navContainer {
+  display: flex;
+  gap: 8px;
+}
+
+.navButton {
+  color: var(--zealthy-text-dark);
+  background-color: transparent;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border-radius: 12px;
+}
+
+.navButton:hover {
+  background-color: var(--zealthy-accent);
+  color: var(--zealthy-primary);
+}
+
+.navButton.active {
+  background-color: var(--zealthy-primary);
+  color: var(--zealthy-white);
+} 

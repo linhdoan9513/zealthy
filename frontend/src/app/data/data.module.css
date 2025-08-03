@@ -1,0 +1,52 @@
+.container {
+  padding: 48px 0;
+}
+
+.title {
+  margin-bottom: 32px;
+  color: var(--zealthy-primary);
+  font-weight: 700;
+}
+
+.tableContainer {
+  margin-top: 24px;
+  margin-bottom: 32px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px var(--zealthy-shadow);
+  border: 1px solid var(--zealthy-border);
+}
+
+.table {
+  background-color: var(--zealthy-white);
+}
+
+.tableHead {
+  background-color: var(--zealthy-accent);
+}
+
+.tableHeadCell {
+  font-weight: 600;
+  color: var(--zealthy-primary);
+  padding: 16px;
+  border-bottom: 2px solid var(--zealthy-border);
+}
+
+.tableBodyCell {
+  padding: 16px;
+  border-bottom: 1px solid var(--zealthy-border);
+}
+
+.tableRow:hover {
+  background-color: var(--zealthy-accent);
+}
+
+.emptyState {
+  text-align: center;
+  padding: 48px 24px;
+  margin-top: 24px;
+  background-color: var(--zealthy-white);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px var(--zealthy-shadow);
+  border: 1px solid var(--zealthy-border);
+} 

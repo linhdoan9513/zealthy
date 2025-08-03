@@ -32,6 +32,29 @@
   border-bottom: 2px solid var(--zealthy-border);
 }
 
+.sortableHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.sortableHeader:hover {
+  color: var(--zealthy-primary-light);
+}
+
+.sortableHeader svg {
+  font-size: 16px;
+  color: var(--zealthy-primary);
+  transition: opacity 0.2s ease;
+}
+
+.sortableHeader:hover svg {
+  opacity: 1 !important;
+}
+
 .tableBodyCell {
   padding: 16px;
   border-bottom: 1px solid var(--zealthy-border);

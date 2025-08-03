@@ -13,17 +13,41 @@ import {
   TableRow,
   Chip,
 } from '@mui/material';
+import { ArrowUpward, ArrowDownward } from '@mui/icons-material';
 import { useQuery } from '@tanstack/react-query';
 import { userAPI } from '@/services/api';
 import { User } from '@/types';
 import styles from './data.module.css';
+import { useState } from 'react';
 
 export default function DataTablePage() {
+  const [sortBy, setSortBy] = useState<string>('createdAt');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+
   const { data: users, isLoading, error } = useQuery({
-    queryKey: ['users'],
-    queryFn: userAPI.getAllUsers,
+    queryKey: ['users', sortBy, sortOrder],
+    queryFn: () => userAPI.getAllUsers(sortBy, sortOrder),
     refetchInterval: 5000, // Refresh every 5 seconds
   });
+
+  const handleSort = (field: string) => {
+    if (sortBy === field) {
+      // Toggle sort order if same field
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      // Set new field with default desc order
+      setSortBy(field);
+      setSortOrder('desc');
+    }
+  };
+
+  const getSortIcon = (field: string) => {
+    if (sortBy === field) {
+      return sortOrder === 'asc' ? <ArrowUpward /> : <ArrowDownward />;
+    }
+    // Show neutral arrow for unsorted columns
+    return <ArrowUpward style={{ opacity: 0.3 }} />;
+  };
 
   if (isLoading) {
     return (
@@ -52,13 +76,42 @@ export default function DataTablePage() {
           <Table className={styles.table}>
             <TableHead className={styles.tableHead}>
               <TableRow>
-                <TableCell className={styles.tableHeadCell}>Name</TableCell>
-                <TableCell className={styles.tableHeadCell}>Email</TableCell>
-                <TableCell className={styles.tableHeadCell}>About Me</TableCell>
-                <TableCell className={styles.tableHeadCell}>Address</TableCell>
-                <TableCell className={styles.tableHeadCell}>Birth Date</TableCell>
-                <TableCell className={styles.tableHeadCell}>Created</TableCell>
-                <TableCell className={styles.tableHeadCell}>Updated</TableCell>
+                <TableCell className={styles.tableHeadCell}>
+                  <Box className={styles.sortableHeader} onClick={() => handleSort('firstName')}>
+                    <Typography>Name</Typography>
+                    {getSortIcon('firstName')}
+                  </Box>
+                </TableCell>
+                <TableCell className={styles.tableHeadCell}>
+                  <Box className={styles.sortableHeader} onClick={() => handleSort('email')}>
+                    <Typography>Email</Typography>
+                    {getSortIcon('email')}
+                  </Box>
+                </TableCell>
+                <TableCell className={styles.tableHeadCell}>
+                  <Typography>About Me</Typography>
+                </TableCell>
+                <TableCell className={styles.tableHeadCell}>
+                  <Typography>Address</Typography>
+                </TableCell>
+                <TableCell className={styles.tableHeadCell}>
+                  <Box className={styles.sortableHeader} onClick={() => handleSort('birthdate')}>
+                    <Typography>Birth Date</Typography>
+                    {getSortIcon('birthdate')}
+                  </Box>
+                </TableCell>
+                <TableCell className={styles.tableHeadCell}>
+                  <Box className={styles.sortableHeader} onClick={() => handleSort('createdAt')}>
+                    <Typography>Created</Typography>
+                    {getSortIcon('createdAt')}
+                  </Box>
+                </TableCell>
+                <TableCell className={styles.tableHeadCell}>
+                  <Box className={styles.sortableHeader} onClick={() => handleSort('updatedAt')}>
+                    <Typography>Updated</Typography>
+                    {getSortIcon('updatedAt')}
+                  </Box>
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

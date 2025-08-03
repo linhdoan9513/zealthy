@@ -38,8 +38,12 @@ export const userAPI = {
     return response.data;
   },
 
-  getAllUsers: async (): Promise<User[]> => {
-    const response = await api.get('/users');
+  getAllUsers: async (sortBy?: string, sortOrder?: 'asc' | 'desc'): Promise<User[]> => {
+    const params = new URLSearchParams();
+    if (sortBy) params.append('sortBy', sortBy);
+    if (sortOrder) params.append('sortOrder', sortOrder);
+    
+    const response = await api.get(`/users?${params.toString()}`);
     return response.data;
   },
 

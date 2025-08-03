@@ -168,6 +168,29 @@ export const getAllUsers = async (req: Request, res: Response) => {
       });
     }
 
+    // Extract sorting parameters from query string
+    const { sortBy = 'createdAt', sortOrder = 'desc' } = req.query;
+    
+    // Validate sortBy parameter
+    const validSortFields = [
+      'firstName', 'lastName', 'email', 'birthdate', 
+      'createdAt', 'updatedAt'
+    ];
+    
+    if (!validSortFields.includes(sortBy as string)) {
+      return res.status(400).json({ 
+        error: 'Invalid sort field',
+        validFields: validSortFields
+      });
+    }
+    
+    // Validate sortOrder parameter
+    if (!['asc', 'desc'].includes(sortOrder as string)) {
+      return res.status(400).json({ 
+        error: 'Invalid sort order. Must be "asc" or "desc"'
+      });
+    }
+
     const users = await db.user.findMany({
       select: {
         id: true,
@@ -184,7 +207,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
         updatedAt: true
       },
       orderBy: {
-        createdAt: 'desc'
+        [sortBy as string]: sortOrder as 'asc' | 'desc'
       }
     });
 

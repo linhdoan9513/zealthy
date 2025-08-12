@@ -12,8 +12,10 @@ import {
   TableHead,
   TableRow,
   Chip,
+  Button,
+  CircularProgress,
 } from '@mui/material';
-import { ArrowUpward, ArrowDownward } from '@mui/icons-material';
+import { ArrowUpward, ArrowDownward, Refresh } from '@mui/icons-material';
 import { useQuery } from '@tanstack/react-query';
 import { userAPI } from '@/services/api';
 import { User } from '@/types';
@@ -24,10 +26,12 @@ export default function DataTablePage() {
   const [sortBy, setSortBy] = useState<string>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
-  const { data: users, isLoading, error } = useQuery({
+  const { data: users, isLoading, error, refetch } = useQuery({
     queryKey: ['users', sortBy, sortOrder],
     queryFn: () => userAPI.getAllUsers(sortBy, sortOrder),
-    refetchInterval: 5000, // Refresh every 5 seconds
+    refetchOnWindowFocus: true,  // Refresh when user returns to tab
+    staleTime: 30000,           // Consider data fresh for 30 seconds
+    gcTime: 300000,             // Keep in cache for 5 minutes
   });
 
   const handleSort = (field: string) => {
@@ -67,9 +71,19 @@ export default function DataTablePage() {
 
   return (
     <Container maxWidth="lg" className={styles.container}>
-      <Typography variant="h4" component="h1" className={styles.title}>
-        User Data Table
-      </Typography>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+        <Typography variant="h4" component="h1" className={styles.title}>
+          User Data Table
+        </Typography>
+        <Button
+          variant="outlined"
+          startIcon={isLoading ? <CircularProgress size={20} /> : <Refresh />}
+          onClick={() => refetch()}
+          disabled={isLoading}
+        >
+          {isLoading ? 'Refreshing...' : 'Refresh Data'}
+        </Button>
+      </Box>
 
       <Paper elevation={0} className={styles.tableContainer}>
         <TableContainer>

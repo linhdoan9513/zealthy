@@ -11,6 +11,8 @@ import { OnboardingFormData, UpdateUserRequest } from '../types';
 import AccountCreationForm from '../components/AccountCreationForm';
 import PersonalInfoForm from '../components/PersonalInfoForm';
 import AdditionalDetailsForm from '../components/AdditionalDetailsForm';
+import { WIZARD_STEPS, getStepByIndex, isLastStep } from '../config/wizardConfig';
+import { mapConfigToUpdateData } from '../utils/fieldMapper';
 import styles from './page.module.css';
 
 const validationSchema = yup.object({
@@ -26,11 +28,6 @@ const validationSchema = yup.object({
   birthdate: yup.string().optional(),
 }) as yup.ObjectSchema<OnboardingFormData>;
 
-const steps = [
-  { label: 'Account Setup', description: 'Create your account' },
-  { label: 'Personal Info', description: 'Tell us about yourself' },
-  { label: 'Additional Details', description: 'Complete your profile' },
-];
 
 export default function OnboardingWizard() {
   const [activeStep, setActiveStep] = useState(0);
@@ -85,7 +82,7 @@ export default function OnboardingWizard() {
   const updateUserMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateUserRequest }) => userAPI.updateUser(id, data),
     onSuccess: () => {
-      if (activeStep < 2) {
+      if (!isLastStep(activeStep)) {
         setActiveStep(activeStep + 1);
       } else {
         // Onboarding complete
@@ -103,33 +100,11 @@ export default function OnboardingWizard() {
         lastName: data.lastName,
       });
     } else if (userId) {
-      const updateData: UpdateUserRequest = {};
-      
-      if (activeStep === 1 && config?.page2) {
-        config.page2.forEach(comp => {
-          if (comp.component === 'aboutMe') updateData.aboutMe = data.aboutMe;
-          if (comp.component === 'address') {
-            updateData.street = data.street;
-            updateData.city = data.city;
-            updateData.state = data.state;
-            updateData.zip = data.zip;
-          }
-          if (comp.component === 'birthdate') updateData.birthdate = data.birthdate;
-        });
-      } else if (activeStep === 2 && config?.page3) {
-        config.page3.forEach(comp => {
-          if (comp.component === 'aboutMe') updateData.aboutMe = data.aboutMe;
-          if (comp.component === 'address') {
-            updateData.street = data.street;
-            updateData.city = data.city;
-            updateData.state = data.state;
-            updateData.zip = data.zip;
-          }
-          if (comp.component === 'birthdate') updateData.birthdate = data.birthdate;
-        });
+      const currentStep = getStepByIndex(activeStep);
+      if (currentStep?.configKey && config?.[currentStep.configKey]) {
+        const updateData = mapConfigToUpdateData(config[currentStep.configKey], data);
+        updateUserMutation.mutate({ id: userId, data: updateData });
       }
-
-      updateUserMutation.mutate({ id: userId, data: updateData });
     }
   };
 
@@ -155,8 +130,8 @@ export default function OnboardingWizard() {
           activeStep={activeStep} 
           className={styles.stepper}
         >
-          {steps.map((step, index) => (
-            <Step key={index}>
+          {WIZARD_STEPS.map((step) => (
+            <Step key={step.id}>
               <StepLabel className={styles.stepperLabel}>
                 <Box>
                   <Typography 
@@ -179,9 +154,25 @@ export default function OnboardingWizard() {
 
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)}>
-            {activeStep === 0 && <AccountCreationForm />}
-            {activeStep === 1 && config?.page2 && <PersonalInfoForm config={config.page2} />}
-            {activeStep === 2 && config?.page3 && <AdditionalDetailsForm config={config.page3} />}
+            {(() => {
+              const currentStep = getStepByIndex(activeStep);
+              if (!currentStep) return null;
+
+              switch (currentStep.component) {
+                case 'AccountCreationForm':
+                  return <AccountCreationForm />;
+                case 'PersonalInfoForm':
+                  return currentStep.configKey && config?.[currentStep.configKey] ? (
+                    <PersonalInfoForm config={config[currentStep.configKey]} />
+                  ) : null;
+                case 'AdditionalDetailsForm':
+                  return currentStep.configKey && config?.[currentStep.configKey] ? (
+                    <AdditionalDetailsForm config={config[currentStep.configKey]} />
+                  ) : null;
+                default:
+                  return null;
+              }
+            })()}
 
             <Box className={activeStep === 0 ? styles.buttonContainerFirstStep : styles.buttonContainer}>
               {activeStep > 0 && (
@@ -197,7 +188,7 @@ export default function OnboardingWizard() {
                 onClick={handleNext}
                 className={styles.nextButton}
               >
-                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                {isLastStep(activeStep) ? 'Finish' : 'Next'}
               </Button>
             </Box>
           </form>

@@ -1,9 +1,8 @@
-import { OnboardingConfig } from '@/types';
-import { UpdateUserRequest } from '@/types';
+import { OnboardingConfig, UpdateUserRequest, OnboardingFormData } from '@/types';
 
 export const mapConfigToUpdateData = (
   config: OnboardingConfig[],
-  formData: Record<string, string | undefined>
+  formData: OnboardingFormData
 ): UpdateUserRequest => {
   const updateData: UpdateUserRequest = {};
 

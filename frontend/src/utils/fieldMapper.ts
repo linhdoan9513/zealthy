@@ -3,7 +3,7 @@ import { UpdateUserRequest } from '@/types';
 
 export const mapConfigToUpdateData = (
   config: OnboardingConfig[],
-  formData: any
+  formData: Record<string, string | undefined>
 ): UpdateUserRequest => {
   const updateData: UpdateUserRequest = {};
 
